@@ -1,8 +1,7 @@
 // TIMER
 
-const timer = () => {
-   const deadline = '2021-07-31';   // конечная дата
-
+const timer = (id, deadline) => {
+  
    const getRemainingTime = (endtime) => {
        const t = Date.parse(endtime) - Date.parse(new Date()); // конечная дата минус текущая дата
        const days = Math.floor( (t/(1000*60*60*24)) );  
@@ -34,7 +33,7 @@ const timer = () => {
        const  hours = timer.querySelector('#hours'); // выбираем по id раздел
        const  minutes = timer.querySelector('#minutes'); // выбираем по id раздел
        const  seconds = timer.querySelector('#seconds'); // выбираем по id раздел
-       timeInterval = setInterval(updateClock, 1000);  // функция обновления значения каждую секунду
+       const timeInterval = setInterval(updateClock, 1000);  // функция обновления значения каждую секунду
        updateClock();
        function updateClock()  {
            const t = getRemainingTime(endtime);
@@ -49,7 +48,9 @@ const timer = () => {
         }
     };
    
-   setClock('.timer', deadline);
+   setClock(id, deadline);
 }
 
-module.exports = timer;
+// module.exports = timer;
+
+export default timer;

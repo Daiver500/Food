@@ -1,9 +1,10 @@
 // TABS
 
-const tabs = () => {
-    const tabsHeader = document.querySelectorAll(".tabheader__item");
-    const tabsContent = document.querySelectorAll(".tabcontent");
-    const tabsHeaderParent = document.querySelector(".tabheader__items");
+const tabs = ({itemHeaderClass, itemContentClass, parentSelectorClass, activeClass}) => {
+// const tabs = (itemHeaderClass, itemContentClass, parentSelectorClass, activeClass) => { альтернативный вариант без деструктуризации
+    const tabsHeader = document.querySelectorAll(itemHeaderClass);
+    const tabsContent = document.querySelectorAll(itemContentClass);
+    const tabsHeaderParent = document.querySelector(parentSelectorClass);
   
     const hideTabContent = () => {
       tabsContent.forEach((item) => {
@@ -11,14 +12,14 @@ const tabs = () => {
         item.classList.remove("show", "fade");
       });
       tabsHeader.forEach((item) => {
-        item.classList.remove("tabheader__item--active");
+        item.classList.remove(activeClass);
       });
     };
   
     const showTabContent = (i = 0) => {       // i в данном случае это первый элемент массива
       tabsContent[i].classList.add("show", "fade");
       tabsContent[i].classList.remove("hidden");
-      tabsHeader[i].classList.add("tabheader__item--active");
+      tabsHeader[i].classList.add(activeClass);
     };
   
     hideTabContent();
@@ -37,4 +38,6 @@ const tabs = () => {
      });
 }
 
-module.exports = tabs;
+// module.exports = tabs;
+
+export default tabs;

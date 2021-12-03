@@ -1,6 +1,6 @@
 // SLIDER
 
-const slider= () => {
+const slider= ({container, slide, nextButton, prevButton, totalCounter, currentCounter,wrapper, field}) => { // какая-то деструктуризация тут
  // SLIDER VARIANT 1  (скрытие карточек)
 
   /*const slides = document.querySelectorAll(".offer__slide");
@@ -59,14 +59,14 @@ const slider= () => {
 
   // SLIDER VARIANT 2 (проллистывание карточек)
     
-  const slides = document.querySelectorAll(".offer__slide");
-  const slider = document.querySelector(".offer__slider")
-  const previousSlideButton = document.querySelector(".offer__slider-prev");
-  const nextSlideButton = document.querySelector(".offer__slider-next");
-  const total = document.querySelector("#total");
-  const current = document.querySelector("#current");
-  const slidesWrapper = document.querySelector(".offer__slider-wrapper");
-  const slidesInner = document.querySelector(".offer__slider-inner");
+  const slides = document.querySelectorAll(slide);
+  const slider = document.querySelector(container)
+  const previousSlideButton = document.querySelector(prevButton);
+  const nextSlideButton = document.querySelector(nextButton);
+  const total = document.querySelector(totalCounter);
+  const current = document.querySelector(currentCounter);
+  const slidesWrapper = document.querySelector(wrapper);
+  const slidesInner = document.querySelector(field);
   const width = window.getComputedStyle(slidesWrapper).width;                               // ширина блока где находятся слайдеры
   let currentSlide = 1; 
   let offset = 0;                                                  // на какое расстояние мы смещаемся, отсчет от 0   
@@ -187,4 +187,7 @@ const slider= () => {
   });
 
 }
-module.exports = slider;
+
+// module.exports = slider;
+
+export default slider;

@@ -109,4 +109,6 @@ const result = document.querySelector(".calculating__result span"); // поле 
  getDynamycInformation("#weight")
  getDynamycInformation("#age")
 }
-module.exports = calculator;
+// module.exports = calculator; старый вариант 
+
+export default calculator;

@@ -1,6 +1,8 @@
 // CARDS
 // CLASSES FOR CARDS AND CARD CREATION (WITHOUT CLASSES LOOK FOR THE SERVER PART BELOW) 
 
+import {getData} from "../services/server";
+
 const cards = () => {
 class MenuCard {
     constructor (img, alt, title, text, price, parentSelector, ...classes) {
@@ -42,14 +44,12 @@ class MenuCard {
     }
   }
 
-  const getData = async (url) => {          // внутри функции будет асинхронный код, async и await всегда используются в паре, в данной строке получаем информацию
-    const result = await fetch(url);
-  
-    if (!result.ok)           {             // проверяем прошел ли запрос
-       throw new Error (`Could not fetch ${url}, status: ${result.status}`);                  // выкидываем ошибку
-    }              
-    return await result.json ()
-  }
+  /*axios.get("http://localhost:3000/menu")                        // AXIOS служит для обращения к серверу (GEt\POST) без создания дополнительных функций
+  .then(data => {
+    data.data.forEach(({img, altimg, title, descr, price}) => {       
+      new MenuCard(img, altimg, title, descr, price, ".menu .container").render()   
+    });
+  });*/
   
   getData("http://localhost:3000/menu")                            // запрос к серверу
     .then(data => {
@@ -80,6 +80,6 @@ class MenuCard {
   }*/
 }
 
-module.exports = cards;
+// module.exports = cards;
 
- 
+export default cards;

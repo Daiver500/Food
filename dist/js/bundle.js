@@ -1,12 +1,17 @@
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./js/modules/calculator.js":
 /*!**********************************!*\
   !*** ./js/modules/calculator.js ***!
   \**********************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 // CALCULATOR
 
 const calculator = () => {
@@ -118,7 +123,9 @@ const result = document.querySelector(".calculating__result span"); // поле 
  getDynamycInformation("#weight")
  getDynamycInformation("#age")
 }
-module.exports = calculator;
+// module.exports = calculator; старый вариант 
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (calculator);
 
 /***/ }),
 
@@ -126,10 +133,17 @@ module.exports = calculator;
 /*!****************************!*\
   !*** ./js/modules/card.js ***!
   \****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _services_server__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/server */ "./js/services/server.js");
 // CARDS
 // CLASSES FOR CARDS AND CARD CREATION (WITHOUT CLASSES LOOK FOR THE SERVER PART BELOW) 
+
+
 
 const cards = () => {
 class MenuCard {
@@ -172,16 +186,14 @@ class MenuCard {
     }
   }
 
-  const getData = async (url) => {          // внутри функции будет асинхронный код, async и await всегда используются в паре, в данной строке получаем информацию
-    const result = await fetch(url);
+  /*axios.get("http://localhost:3000/menu")                        // AXIOS служит для обращения к серверу (GEt\POST) без создания дополнительных функций
+  .then(data => {
+    data.data.forEach(({img, altimg, title, descr, price}) => {       
+      new MenuCard(img, altimg, title, descr, price, ".menu .container").render()   
+    });
+  });*/
   
-    if (!result.ok)           {             // проверяем прошел ли запрос
-       throw new Error (`Could not fetch ${url}, status: ${result.status}`);                  // выкидываем ошибку
-    }              
-    return await result.json ()
-  }
-  
-  getData("http://localhost:3000/menu")                            // запрос к серверу
+  (0,_services_server__WEBPACK_IMPORTED_MODULE_0__.getData)("http://localhost:3000/menu")                            // запрос к серверу
     .then(data => {
       data.forEach(({img, altimg, title, descr, price}) => {       // деструктуризация объекта 
         new MenuCard(img, altimg, title, descr, price, ".menu .container").render()   // создание карточек на основе шаблона в классах (один из вариантов создания карточек)
@@ -210,9 +222,121 @@ class MenuCard {
   }*/
 }
 
-module.exports = cards;
+// module.exports = cards;
 
- 
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (cards);
+
+/***/ }),
+
+/***/ "./js/modules/forms.js":
+/*!*****************************!*\
+  !*** ./js/modules/forms.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _services_server__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/server */ "./js/services/server.js");
+// SERVER GET/POST FETCH API JSON
+
+
+const forms = (formSelector) => {           // передаем сюда из основного файла аргумент
+  
+ const forms = document.querySelectorAll(formSelector);
+    const  message = {                         // создаем объект с текстовыми сообщениями
+      loading: "img/spinner.svg",
+      success: "Спасибо и до свидания",
+      error: "Ошибка"
+    }
+                       
+    const bindPostData = (form) => {
+      const formSendingHandler = (evt) => {
+        evt.preventDefault();
+       
+        const statusMessage = document.createElement("img");    // создаем новый элемент с текстовым сообщением и добавляем его на страницу
+        statusMessage.src = message.loading;
+        statusMessage.style.cssText = `  
+          margin: 0 auto;
+          display: block;         
+        `;                                                                   // CSS стили пропишем inline
+        form.insertAdjacentElement("afterEnd", statusMessage);              // вставляем элемент после формы
+        
+        const formData = new FormData(form);   // собираем данные из формы, которые будем отправлять, как аргумент передается форма с которой собираем данные
+                                               // !!! в html всегда обязательно указывать артрибут name="name" для интерактивных полей (input, textarea и т.д.) иначе FormData не найдет его !!!
+  
+        /*const object = {};                        
+          formData.forEach(function(value, key) {  // ДЛЯ JSON  перебираем formData и формируем новый объект, так как JSON не примет formData другим образом
+            object[key] = value;
+        })*/                                        // заменили на способ ниже
+  
+        const json = JSON.stringify(Object.fromEntries(formData.entries())); // превращаем formData в массив массивов, затем в классический объект и затем в json
+  
+        //  Object.entries(obj) преобразует объект в массив массивов [key, value]
+        //  Object.fromEntries(array); преобразует массив в объект
+  
+        /*fetch("server.php", {                     // обращаемся к серверу, вынесли это в отдельную функцию PostData
+          method: "POST",                          // отправляем информацию
+          headers: {
+            "Content-type": "application/json "       //заголовки нужны для отправки JSON
+          },
+          body: json                             // сюда передаем json
+        })*/
+
+        // window.server.postData(postData("http://localhost:3000/requests", json))   // вариант 1 (см server.js)
+        (0,_services_server__WEBPACK_IMPORTED_MODULE_0__.postData)("http://localhost:3000/requests", json)  // ДЛЯ JSON подготтавливаем данные для сервера, функцию импортировали и она будет отрабатывать тут
+        .then(data => {                             // с сервера вернется какая-то информация
+          console.log(data);
+          showThanksModal(message.success);                                       
+          statusMessage.remove();                      // удаляем сообщение через 2 секунды
+        }).catch(() => {
+          showThanksModal(message.error);                // если внутри fetch promise попадает на ошибку (404, 502 и т.д.), то reject не будет и promise выполниться, ошибка сработает только при отсутствии интернета
+        }).finally(() => {
+          form.reset();                              // очистка формы, также можно взять инпуты и сделать их value === "";
+        })   
+      }
+      const hideModalWindow = window.modal.hideModalWindow;
+      form.addEventListener("submit", formSendingHandler)
+      form.addEventListener("submit", hideModalWindow)
+    }
+  
+    forms.forEach((item) => {   // для каждой формы запускаем функцию postData и передаем в нее как аргумент форму
+      bindPostData(item);
+    });
+   
+    const showThanksModal = (message) => {                                    // сюда передаем как аргумент сообщение пользователю из объекта message
+      const thanksModal = document.createElement("div");                      // создаем новую начинку модального окна для сообщения пользователю
+      thanksModal.classList.add("modal__message");           
+      thanksModal.innerHTML = `
+      <div class="modal__dialog">
+        <div class="modal__content">
+          <div class="modal__close" data-close>×
+          </div>
+          <div class="modal__title">${message}</div>
+        </div>
+      <div>
+      `; 
+      document.querySelector(".page").append(thanksModal);            // добавляем в модальное окно новое наполнение
+      setTimeout(() => {                                               // через определенное время удаляем сообщение пользователю и возвращаем обратно возможность вызвать и отправить форму
+        thanksModal.remove();
+      }, 4000)
+      const modalMessage = document.querySelector(".modal__message");
+      const modalClose = modalMessage.querySelector(".modal__close");
+      const closeThanksModal = () => {
+        thanksModal.remove();
+      }
+      modalClose.addEventListener("click", closeThanksModal);
+    }      
+  
+    fetch("db.json")
+      .then(data => data.json())
+      .then(result => console.log(result))
+}
+
+// module.exports = forms;
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (forms);
 
 /***/ }),
 
@@ -220,8 +344,12 @@ module.exports = cards;
 /*!*****************************!*\
   !*** ./js/modules/modal.js ***!
   \*****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 // MODAL
 
 const modal = () => {
@@ -281,129 +409,9 @@ window.addEventListener("scroll", showModalByScroll);
   }
 }
 
+// module.exports = modal;
 
-
-module.exports = modal;
-
-/***/ }),
-
-/***/ "./js/modules/server.js":
-/*!******************************!*\
-  !*** ./js/modules/server.js ***!
-  \******************************/
-/***/ ((module) => {
-
-// SERVER GET/POST FETCH API JSON
-
-const server = () => {
-  
-  /*axios.get("http://localhost:3000/menu")                        // AXIOS служит для обращения к серверу (GEt\POST) без создания дополнительных функций
-  .then(data => {
-    data.data.forEach(({img, altimg, title, descr, price}) => {       
-      new MenuCard(img, altimg, title, descr, price, ".menu .container").render()   
-    });
-  });*/
-  
-  const forms = document.querySelectorAll("form");
-    const  message = {                         // создаем объект с текстовыми сообщениями
-      loading: "img/spinner.svg",
-      success: "Спасибо и до свидания",
-      error: "Ошибка"
-    }
-                       
-    const postData = async (url, data) => {          // внутри функции будет асинхронный код, async и await всегда используются в паре
-      const result = await fetch(url, {              // здесь дожидаеся ответа await 
-        method: "POST",                          // отправляем информацию
-          headers: {
-            "Content-type": "application/json "       //заголовки нужны для отправки JSON
-          },
-          body: data                                  // фукнцию postData можно испольоваться как универсальную с различными аргументами
-      });
-  
-      return await result.json()
-    }
-  
-    const bindPostData = (form) => {
-      const formSendingHandler = (evt) => {
-        evt.preventDefault();
-       
-        const statusMessage = document.createElement("img");    // создаем новый элемент с текстовым сообщением и добавляем его на страницу
-        statusMessage.src = message.loading;
-        statusMessage.style.cssText = `  
-          margin: 0 auto;
-          display: block;         
-        `;                                                                   // CSS стили пропишем inline
-        form.insertAdjacentElement("afterEnd", statusMessage);              // вставляем элемент после формы
-        
-        const formData = new FormData(form);   // собираем данные из формы, которые будем отправлять, как аргумент передается форма с которой собираем данные
-                                               // !!! в html всегда обязательно указывать артрибут name="name" для интерактивных полей (input, textarea и т.д.) иначе FormData не найдет его !!!
-  
-        /*const object = {};                        
-          formData.forEach(function(value, key) {  // ДЛЯ JSON  перебираем formData и формируем новый объект, так как JSON не примет formData другим образом
-            object[key] = value;
-        })*/                                        // заменили на способ ниже
-  
-        const json = JSON.stringify(Object.fromEntries(formData.entries())); // превращаем formData в массив массивов, затем в классический объект и затем в json
-  
-        //  Object.entries(obj) преобразует объект в массив массивов [key, value]
-        //  Object.fromEntries(array); преобразует массив в объект
-  
-        /*fetch("server.php", {                     // обращаемся к серверу, вынесли это в отдельную функцию PostData
-          method: "POST",                          // отправляем информацию
-          headers: {
-            "Content-type": "application/json "       //заголовки нужны для отправки JSON
-          },
-          body: json                             // сюда передаем json
-        })*/
-        postData("http://localhost:3000/requests", json)  // ДЛЯ JSON подготтавливаем данные для сервера
-        .then(data => {                             // с сервера вернется какая-то информация
-          console.log(data);
-          showThanksModal(message.success);                                       
-          statusMessage.remove();                      // удаляем сообщение через 2 секунды
-        }).catch(() => {
-          showThanksModal(message.error);                // если внутри fetch promise попадает на ошибку (404, 502 и т.д.), то reject не будет и promise выполниться, ошибка сработает только при отсутствии интернета
-        }).finally(() => {
-          form.reset();                              // очистка формы, также можно взять инпуты и сделать их value === "";
-        })   
-      }
-      const hideModalWindow = window.modal.hideModalWindow;
-      form.addEventListener("submit", formSendingHandler)
-      form.addEventListener("submit", hideModalWindow)
-    }
-  
-    forms.forEach((item) => {   // для каждой формы запускаем функцию postData и передаем в нее как аргумент форму
-      bindPostData(item);
-    });
-   
-    const showThanksModal = (message) => {                                    // сюда передаем как аргумент сообщение пользователю из объекта message
-      const thanksModal = document.createElement("div");                      // создаем новую начинку модального окна для сообщения пользователю
-      thanksModal.classList.add("modal__message");           
-      thanksModal.innerHTML = `
-      <div class="modal__dialog">
-        <div class="modal__content">
-          <div class="modal__close" data-close>×
-          </div>
-          <div class="modal__title">${message}</div>
-        </div>
-      <div>
-      `; 
-      document.querySelector(".page").append(thanksModal);            // добавляем в модальное окно новое наполнение
-      setTimeout(() => {                                               // через определенное время удаляем сообщение пользователю и возвращаем обратно возможность вызвать и отправить форму
-        thanksModal.remove();
-      }, 4000)
-      const modalMessage = document.querySelector(".modal__message");
-      const modalClose = modalMessage.querySelector(".modal__close");
-      const closeThanksModal = () => {
-        thanksModal.remove();
-      }
-      modalClose.addEventListener("click", closeThanksModal);
-    }      
-  
-    fetch("db.json")
-      .then(data => data.json())
-      .then(result => console.log(result))
-}
-module.exports = server;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (modal);
 
 /***/ }),
 
@@ -411,11 +419,15 @@ module.exports = server;
 /*!******************************!*\
   !*** ./js/modules/slider.js ***!
   \******************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 // SLIDER
 
-const slider= () => {
+const slider= ({container, slide, nextButton, prevButton, totalCounter, currentCounter,wrapper, field}) => { // какая-то деструктуризация тут
  // SLIDER VARIANT 1  (скрытие карточек)
 
   /*const slides = document.querySelectorAll(".offer__slide");
@@ -474,14 +486,14 @@ const slider= () => {
 
   // SLIDER VARIANT 2 (проллистывание карточек)
     
-  const slides = document.querySelectorAll(".offer__slide");
-  const slider = document.querySelector(".offer__slider")
-  const previousSlideButton = document.querySelector(".offer__slider-prev");
-  const nextSlideButton = document.querySelector(".offer__slider-next");
-  const total = document.querySelector("#total");
-  const current = document.querySelector("#current");
-  const slidesWrapper = document.querySelector(".offer__slider-wrapper");
-  const slidesInner = document.querySelector(".offer__slider-inner");
+  const slides = document.querySelectorAll(slide);
+  const slider = document.querySelector(container)
+  const previousSlideButton = document.querySelector(prevButton);
+  const nextSlideButton = document.querySelector(nextButton);
+  const total = document.querySelector(totalCounter);
+  const current = document.querySelector(currentCounter);
+  const slidesWrapper = document.querySelector(wrapper);
+  const slidesInner = document.querySelector(field);
   const width = window.getComputedStyle(slidesWrapper).width;                               // ширина блока где находятся слайдеры
   let currentSlide = 1; 
   let offset = 0;                                                  // на какое расстояние мы смещаемся, отсчет от 0   
@@ -602,7 +614,10 @@ const slider= () => {
   });
 
 }
-module.exports = slider;
+
+// module.exports = slider;
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (slider);
 
 /***/ }),
 
@@ -610,14 +625,19 @@ module.exports = slider;
 /*!****************************!*\
   !*** ./js/modules/tabs.js ***!
   \****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 // TABS
 
-const tabs = () => {
-    const tabsHeader = document.querySelectorAll(".tabheader__item");
-    const tabsContent = document.querySelectorAll(".tabcontent");
-    const tabsHeaderParent = document.querySelector(".tabheader__items");
+const tabs = ({itemHeaderClass, itemContentClass, parentSelectorClass, activeClass}) => {
+// const tabs = (itemHeaderClass, itemContentClass, parentSelectorClass, activeClass) => { альтернативный вариант без деструктуризации
+    const tabsHeader = document.querySelectorAll(itemHeaderClass);
+    const tabsContent = document.querySelectorAll(itemContentClass);
+    const tabsHeaderParent = document.querySelector(parentSelectorClass);
   
     const hideTabContent = () => {
       tabsContent.forEach((item) => {
@@ -625,14 +645,14 @@ const tabs = () => {
         item.classList.remove("show", "fade");
       });
       tabsHeader.forEach((item) => {
-        item.classList.remove("tabheader__item--active");
+        item.classList.remove(activeClass);
       });
     };
   
     const showTabContent = (i = 0) => {       // i в данном случае это первый элемент массива
       tabsContent[i].classList.add("show", "fade");
       tabsContent[i].classList.remove("hidden");
-      tabsHeader[i].classList.add("tabheader__item--active");
+      tabsHeader[i].classList.add(activeClass);
     };
   
     hideTabContent();
@@ -651,7 +671,9 @@ const tabs = () => {
      });
 }
 
-module.exports = tabs;
+// module.exports = tabs;
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tabs);
 
 /***/ }),
 
@@ -659,13 +681,16 @@ module.exports = tabs;
 /*!*****************************!*\
   !*** ./js/modules/timer.js ***!
   \*****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 // TIMER
 
-const timer = () => {
-   const deadline = '2021-07-31';   // конечная дата
-
+const timer = (id, deadline) => {
+  
    const getRemainingTime = (endtime) => {
        const t = Date.parse(endtime) - Date.parse(new Date()); // конечная дата минус текущая дата
        const days = Math.floor( (t/(1000*60*60*24)) );  
@@ -697,7 +722,7 @@ const timer = () => {
        const  hours = timer.querySelector('#hours'); // выбираем по id раздел
        const  minutes = timer.querySelector('#minutes'); // выбираем по id раздел
        const  seconds = timer.querySelector('#seconds'); // выбираем по id раздел
-       timeInterval = setInterval(updateClock, 1000);  // функция обновления значения каждую секунду
+       const timeInterval = setInterval(updateClock, 1000);  // функция обновления значения каждую секунду
        updateClock();
        function updateClock()  {
            const t = getRemainingTime(endtime);
@@ -712,10 +737,61 @@ const timer = () => {
         }
     };
    
-   setClock('.timer', deadline);
+   setClock(id, deadline);
 }
 
-module.exports = timer;
+// module.exports = timer;
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (timer);
+
+/***/ }),
+
+/***/ "./js/services/server.js":
+/*!*******************************!*\
+  !*** ./js/services/server.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "postData": () => (/* binding */ postData),
+/* harmony export */   "getData": () => (/* binding */ getData)
+/* harmony export */ });
+
+
+// вынесли функцию, чтобы применять ее в разных местах
+
+// Функция для отправки данных на сервер
+
+const postData = async (url, data) => {          // внутри функции будет асинхронный код, async и await всегда используются в паре
+  const result = await fetch(url, {              // здесь дожидаеся ответа await 
+    method: "POST",                          // отправляем информацию
+      headers: {
+        "Content-type": "application/json "       //заголовки нужны для отправки JSON
+    },
+    body: data                                  // фукнцию postData можно испольоваться как универсальную с различными аргументами
+  });
+
+  return await result.json()
+}
+
+// Функция для получения данных с сервера
+
+const getData = async (url) => {          // внутри функции будет асинхронный код, async и await всегда используются в паре, в данной строке получаем информацию
+  const result = await fetch(url);
+  
+  if (!result.ok)           {             // проверяем прошел ли запрос
+    throw new Error (`Could not fetch ${url}, status: ${result.status}`);                  // выкидываем ошибку
+  }              
+  return await result.json ()
+}
+
+// window.server = {          //тоже самое, что и ниже с export (это вариант 1)
+//  postData
+// }
+
+
+
 
 /***/ })
 
@@ -746,21 +822,65 @@ module.exports = timer;
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 /*!**********************!*\
   !*** ./js/script.js ***!
   \**********************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _modules_tabs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/tabs */ "./js/modules/tabs.js");
+/* harmony import */ var _modules_modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/modal */ "./js/modules/modal.js");
+/* harmony import */ var _modules_timer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/timer */ "./js/modules/timer.js");
+/* harmony import */ var _modules_card__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/card */ "./js/modules/card.js");
+/* harmony import */ var _modules_calculator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/calculator */ "./js/modules/calculator.js");
+/* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/forms */ "./js/modules/forms.js");
+/* harmony import */ var _modules_slider__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/slider */ "./js/modules/slider.js");
+
+
+
+
+
+
+
 
 window.addEventListener("DOMContentLoaded", () => {
-    const tabs = __webpack_require__(/*! ./modules/calculator */ "./js/modules/calculator.js"),
-        modal = __webpack_require__(/*! ./modules/card */ "./js/modules/card.js"),
-        timer = __webpack_require__(/*! ./modules/modal */ "./js/modules/modal.js"),
-        card = __webpack_require__(/*! ./modules/server */ "./js/modules/server.js"),
-        calculator = __webpack_require__(/*! ./modules/slider */ "./js/modules/slider.js"),
-        server = __webpack_require__(/*! ./modules/tabs */ "./js/modules/tabs.js"),
-        slider = __webpack_require__(/*! ./modules/timer */ "./js/modules/timer.js");
+    /*const tabs = require('./modules/tabs'),
+        modal = require('./modules/modal'),
+        timer = require('./modules/timer'),
+        card = require('./modules/card'),
+        calculator = require('./modules/calculator'),
+        server = require('./modules/server'),
+        slider = require('./modules/slider');
     
     tabs();
     modal();
@@ -768,7 +888,30 @@ window.addEventListener("DOMContentLoaded", () => {
     card();
     calculator();
     server();
-    slider();
+    slider();*/ // старый метод для прнименения с module.exports = calculator 
+    
+    (0,_modules_tabs__WEBPACK_IMPORTED_MODULE_0__["default"])({
+        itemHeaderClass: '.tabheader__item', 
+        itemContentClass: '.tabcontent', 
+        parentSelectorClass: '.tabheader__items', 
+        activeClass:'tabheader__item--active'
+    }); // здесь прописываем классы, которые передаем как аргументы функции
+    // tabs('.tabheader__item', '.tabcontent', '.tabheader__items', 'tabheader__item--active') // альтернативный вариант без деструктуризации
+    (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])();
+    (0,_modules_timer__WEBPACK_IMPORTED_MODULE_2__["default"])(".timer", "2021-12-31");
+    (0,_modules_card__WEBPACK_IMPORTED_MODULE_3__["default"])();
+    (0,_modules_calculator__WEBPACK_IMPORTED_MODULE_4__["default"])();
+    (0,_modules_forms__WEBPACK_IMPORTED_MODULE_5__["default"])("form");    // сюда как аргумент передаем все формы
+    (0,_modules_slider__WEBPACK_IMPORTED_MODULE_6__["default"])({  // деструктруризация, можно и без нее (смотри tabs)
+        container: '.offer__slider',
+        slide: '.offer__slide',
+        prevButton: '.offer__slider-prev',
+        nextButton: '.offer__slider-next',
+        totalCounter: '#total',
+        currentCounter: '#current',
+        wrapper: '.offer__slider-wrapper',
+        field: '.offer__slider-inner'
+    });
 });
 
 })();
