@@ -44,6 +44,11 @@ class MenuCard {
     }
   }
 
+  // НА МОКОВЫХ ДАННЫХ 
+  //    data.forEach((item) => {       // 
+  //      item = new MenuCard.render()   // создание карточек на основе шаблона в классах (один из вариантов создания карточек)
+  //    });
+
   /*axios.get("http://localhost:3000/menu")                        // AXIOS служит для обращения к серверу (GEt\POST) без создания дополнительных функций
   .then(data => {
     data.data.forEach(({img, altimg, title, descr, price}) => {       
@@ -51,7 +56,7 @@ class MenuCard {
     });
   });*/
   
-  getData("http://localhost:3000/menu")                            // запрос к серверу (тоже самое ниже)
+  getData("http://localhost:3000/menu")                            // запрос к серверу (тоже самое ниже вариант 2)
     .then(data => {
       data.forEach(({img, altimg, title, descr, price}) => {       // деструктуризация объекта 
         new MenuCard(img, altimg, title, descr, price, ".menu .container").render()   // создание карточек на основе шаблона в классах (один из вариантов создания карточек)
@@ -60,14 +65,10 @@ class MenuCard {
   
   // getData("http://localhost:3000/menu")                            // запрос к серверу
   //  .then(data => {
-  //    data.forEach((item) => {       // деструктуризация объекта 
-  //      item = new MenuCard(img, altimg, title, descr, price, ".menu .container").render()   // создание карточек на основе шаблона в классах (один из вариантов создания карточек)
+  //    data.forEach((item) => {       
+  //      item = new MenuCard.render()   // создание карточек на основе шаблона в классах (один из вариантов создания карточек)
   //    });
   //  });
-
-
-
-  
 
   /*getData("http://localhost:3000/menu")                       // СОЗДАНИЕ КАРТОЧЕК БЕЗ ШАБЛОНИЗАЦИИ ПО КЛАССАМ
   .then(data => createCard(data));
