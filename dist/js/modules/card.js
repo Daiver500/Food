@@ -51,12 +51,23 @@ class MenuCard {
     });
   });*/
   
-  getData("http://localhost:3000/menu")                            // запрос к серверу
+  getData("http://localhost:3000/menu")                            // запрос к серверу (тоже самое ниже)
     .then(data => {
       data.forEach(({img, altimg, title, descr, price}) => {       // деструктуризация объекта 
         new MenuCard(img, altimg, title, descr, price, ".menu .container").render()   // создание карточек на основе шаблона в классах (один из вариантов создания карточек)
       });
     });
+  
+  // getData("http://localhost:3000/menu")                            // запрос к серверу
+  //  .then(data => {
+  //    data.forEach((item) => {       // деструктуризация объекта 
+  //      item = new MenuCard(img, altimg, title, descr, price, ".menu .container").render()   // создание карточек на основе шаблона в классах (один из вариантов создания карточек)
+  //    });
+  //  });
+
+
+
+  
 
   /*getData("http://localhost:3000/menu")                       // СОЗДАНИЕ КАРТОЧЕК БЕЗ ШАБЛОНИЗАЦИИ ПО КЛАССАМ
   .then(data => createCard(data));
